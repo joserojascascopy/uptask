@@ -21,26 +21,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-p {
-    font-size: 1.5rem;
-}
-
-h1, h2, h3 {
-    margin: 0 0 1rem 0;
-}
-
-h1 {
-    font-size: 3.5rem;
-}
-
-h2 {
-    font-size: 3rem;
-}
-
-h3 {
-    font-size: 2rem;
-}
-
 img,
 picture,
 video,
@@ -81,14 +61,22 @@ table {
     display: none !important;
 }
 
-.text-center {
-    text-align: center !important;
-}
-
 .full-width {
     width: 100% !important;
 }
 
 .full-height {
     height: 100% !important;
+}
+
+.container {
+    max-width: 120rem;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.container-sm {
+    max-width: 70rem;
+    width: 95%;
+    margin: 0 auto;
 }

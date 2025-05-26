@@ -20,12 +20,15 @@ class LoginController {
         echo "Desde logout";
     }
 
-    public static function crear() {
-        echo "Desde crear";
+    public static function crear(Router $router) {
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         }
+
+        $router->render('auth/crear', [
+            'titulo' => 'Crear Cuenta'
+        ]);
     }
 
     public static function olvide() {
