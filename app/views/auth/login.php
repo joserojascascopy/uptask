@@ -1,4 +1,4 @@
-<div class="container crear">
+<div class="container login">
 
     <h1 class="text-center uptask">Uptask</h1>
     <p class="text-center tagline">Crea y Administra tus proyectos</p>
@@ -17,7 +17,9 @@
                 <input type="password" id="password" name="password" placeholder="Tu contraseña">
             </div>
 
-            <input type="submit" class="btn" value="Iniciar Sesión">
+            <div class="btn-login">
+                <input type="submit" value="Iniciar Sesión">
+            </div>
 
         </form>
 
