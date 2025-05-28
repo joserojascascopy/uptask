@@ -1,0 +1,33 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+@use 'sass:color';
+
+.olvide {
+    margin-top: 2rem;
+
+    .uptask {
+        @include m.textoDegradado(v.$rosa);
+    }
+
+    .btn-olvide {
+        display: flex;
+        justify-content: center;
+
+        input[type="submit"] {
+            justify-content: center;
+            background-color: v.$rosa;
+            padding: 1rem 4rem;
+            color: v.$blanco;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+
+    .acciones {
+
+        a {
+            color: v.$rosa;
+        }
+    }
+}

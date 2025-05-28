@@ -27,7 +27,7 @@
             </div>
 
             <div class="btn-crear">
-                <input type="submit" value="Iniciar Sesión">
+                <input type="submit" value="Crear Cuenta">
             </div>
 
         </form>
