@@ -2,46 +2,69 @@
 
 namespace Models;
 
-abstract class Model {
+class Model {
+    // Conexión a la base de datos
     protected static $db;
 
-    // Método para establecer la conexión
     public static function setConnection($database) {
-        static::$db = $database;
+        self::$db = $database;
     }
 
-    // Método genérico para obtener todos los registros
-    public static function getAll($table) {
-        $stmt = static::$db->query("SELECT * FROM $table");
-        return $stmt->fetchAll();
+    // DB
+    protected static $columnDB = [];
+    protected static $table = '';
+
+    // Alertas y/o Errores
+    protected static $alertas = [];
+
+    public static function setAlerta($tipo, $message) {
+        static::$alertas[$tipo] = $message;
+
+        return static::$alertas;
     }
 
-    // Método genérico para obtener un registro por ID
-    public static function getById($table, $id) {
-        $stmt = static::$db->prepare("SELECT * FROM $table WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch();
+    public static function getAlertas() {
+        return static::$alertas;
     }
 
-    // Método para crear un nuevo registro
-    public static function create($table, $data) {
-        $columns = implode(', ', array_keys($data));
-        $placeholders = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
-        $stmt = static::$db->prepare("INSERT INTO $table ($columns) VALUES ($placeholders)");
-        return $stmt->execute($data);
+    // Identificar y unir los atributos de la DB (Hace una copia del objeto)
+    public function atributos() {
+        $atributos = [];
+
+        foreach(static::$columnDB as $column) {
+            if($column === 'id') continue;
+            
+            $atributos[$column] = $this->$column;
+        }
+
+        return $atributos;
     }
 
-    // Método para actualizar un registro por ID
-    public static function update($table, $id, $data) {
-        $setClause = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
-        $stmt = static::$db->prepare("UPDATE $table SET $setClause WHERE id = :id");
-        $data['id'] = $id;
-        return $stmt->execute($data);
+    // Sanitizar atributos
+    public function sanitizarAtributos() {
+        $atributos = $this->atributos();
+
+        $sanitizado = [];
+
+        foreach($atributos as $key => $value) {
+            $sanitizado[$key] = self::$db->escape_string($value);
+        }
+
+        return $sanitizado;
     }
 
-    // Método para eliminar un registro por ID
-    public static function delete($table, $id) {
-        $stmt = static::$db->prepare("DELETE FROM $table WHERE id = :id");
-        return $stmt->execute(['id' => $id]);
+    // Crear
+    public function crear() {
+        $atributos = $this->sanitizarAtributos();
+
+        $query = "INSERT INTO " . static::$table . "(";
+        $query .= join(', ', array_keys($atributos));
+        $query .= ") VALUES ('";
+        $query .= join("', '", array_values($atributos));
+        $query .= "')";
+
+        $resultado = self::$db->query($query);
+
+        return $resultado;
     }
 }
