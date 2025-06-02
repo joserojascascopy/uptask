@@ -54,11 +54,17 @@ class LoginController {
         ]);
     }
 
-    public static function mensaje() {
-        echo "Desde mensaje";
+    public static function mensaje(Router $router) {
+        
+        $router->render('auth/mensaje', [
+            'titulo' => 'Cuenta Creada Exitosamente'
+        ]);
     }
 
-    public static function confirmar() {
-        echo "Desde confirmar";
+    public static function confirmar(Router $router) {
+        
+        $router->render('auth/confirmar', [
+            'titulo' => 'Confirmar Cuenta'
+        ]);
     }
 }

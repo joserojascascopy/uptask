@@ -1,0 +1,18 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+@use 'sass:color';
+
+.confirmar {
+    margin-top: 2rem;
+
+    .uptask {
+        @include m.textoDegradado(v.$indigo);
+    }
+
+    .acciones {
+
+        a {
+            color: v.$indigo;
+        }
+    }
+}
