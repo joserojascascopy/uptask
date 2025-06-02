@@ -5,7 +5,7 @@
 
     <div class="container-sm">
 
-        <p class="descripcion-pagina text-center">Iniciar Sesión</p>
+        <p class="descripcion-pagina text-center">Recupera tu acceso a Uptask</p>
 
         <form class="formulario" method="POST" action="/olvide">
             <div class="form-group">
