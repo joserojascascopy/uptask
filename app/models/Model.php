@@ -27,7 +27,7 @@ class Model {
         return static::$alertas;
     }
 
-    // Identificar y unir los atributos de la DB (Hace una copia del objeto)
+    // Crea un array con llave (las columnas de la DB) y valor (valores del objeto instanciado)
     public function atributos() {
         $atributos = [];
 
@@ -55,12 +55,12 @@ class Model {
 
     // Crear
     public function crear() {
-        $atributos = $this->sanitizarAtributos();
+        $sanitizado = $this->sanitizarAtributos();
 
         $query = "INSERT INTO " . static::$table . "(";
-        $query .= join(', ', array_keys($atributos));
+        $query .= join(', ', array_keys($sanitizado));
         $query .= ") VALUES ('";
-        $query .= join("', '", array_values($atributos));
+        $query .= join("', '", array_values($sanitizado));
         $query .= "')";
 
         $resultado = self::$db->query($query);
