@@ -40,7 +40,7 @@ function connect() {
     $db = new mysqli($host, $usuario, $password, $dbname);
 
     if (!$db) {
-        echo "No se ha podido establecer la conexión con la base de datos";
+        echo "400 Bad Request. No se ha podido establecer la conexión con la base de datos.";
     }
 
     return $db;
