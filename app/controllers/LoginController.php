@@ -1,6 +1,8 @@
 <?php
 
 namespace Controllers;
+
+use Models\Usuario;
 use MVC\Router;
 
 class LoginController {
@@ -21,13 +23,20 @@ class LoginController {
     }
 
     public static function crear(Router $router) {
+        // Instanciamos el objeto de "Usuario"
+        $usuario = new Usuario;
+        // Array de alertas vacio
+        $alertas = $usuario::getAlertas();
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+            $usuario = new Usuario($_POST);
+            // Validación para el formulario de crear una nueva cuenta
+            $alertas = $usuario->createAccountValidation();
         }
 
         $router->render('auth/crear', [
-            'titulo' => 'Crear Cuenta'
+            'titulo' => 'Crear Cuenta',
+            'usuario' => $usuario
         ]);
     }
 

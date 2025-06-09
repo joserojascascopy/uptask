@@ -11,11 +11,11 @@
 
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre">
+                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" value="<?php echo $usuario->nombre; ?>">
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Tu email">
+                <input type="email" id="email" name="email" placeholder="Tu email" value="<?php echo $usuario->email; ?>">
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
