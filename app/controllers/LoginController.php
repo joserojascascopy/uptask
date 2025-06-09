@@ -26,17 +26,20 @@ class LoginController {
         // Instanciamos el objeto de "Usuario"
         $usuario = new Usuario;
         // Array de alertas vacio
-        $alertas = $usuario::getAlertas();
+        $alertas = Usuario::getAlertas();
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $usuario = new Usuario($_POST);
             // Validación para el formulario de crear una nueva cuenta
             $alertas = $usuario->createAccountValidation();
+            // Revisar si ya existe el usuario
+            $usuarioRegistrado = Usuario::where('email', $usuario->email);
         }
 
         $router->render('auth/crear', [
             'titulo' => 'Crear Cuenta',
-            'usuario' => $usuario
+            'usuario' => $usuario,
+            'alertas' => $alertas
         ]);
     }
 

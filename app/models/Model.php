@@ -67,4 +67,42 @@ class Model {
 
         return $resultado;
     }
+
+    // Realiza una búsqueda en la DB usando una columna y un valor específico
+    public static function where($column, $value) {
+        $query = "SELECT * FROM " . static::$table . " WHERE {$column} = '{$value}'";
+
+        $resultado = self::consultaSQL($query);
+
+        return array_shift($resultado);
+    }
+
+    public static function consultaSQL($query) {
+        // Consulta a la DB
+        $consulta = self::$db->query($query);
+
+        $array = [];
+
+        while($registro = $consulta->fetch_assoc()) { // Devuelve cada fila como un array asociativo
+            $array[] = static::createObject($registro);
+        }
+
+        // Liberar memoria
+        $consulta->free();
+
+        // Retornar los resultados (Array de Objetos)
+        return $array;
+    }
+
+    public static function createObject($registro) {
+        $object = new static; // Crea un objeto en la clase donde se esta heredando con los atributos de dicha clase
+
+        foreach($registro as $key => $value) {
+            if(property_exists($object, $key)) {
+                $object->$key = $value;
+            }
+        }
+
+        return $object;
+    }
 }

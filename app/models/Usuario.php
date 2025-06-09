@@ -28,7 +28,7 @@ class Usuario extends Model {
     // Validación de "Crear una nueva cuenta"
     public function createAccountValidation() {
         if(!$this->nombre) {
-            self::$alertas['error'][] = 'El nombre es obligatorio';
+            self::$alertas['error'][] = 'El nombre no puede estar vacio';
         }
 
         if(!$this->email) {
@@ -36,7 +36,7 @@ class Usuario extends Model {
         }
 
         if(!$this->password) {
-            self::$alertas['error'][] = 'Contraseña obligatoria';
+            self::$alertas['error'][] = 'La contraseña es obligatoria';
         }else {
             // Validación por cantidad de carácteres
             if(strlen($this->password) < 6) {
