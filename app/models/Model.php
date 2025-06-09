@@ -84,7 +84,7 @@ class Model {
         $array = [];
 
         while($registro = $consulta->fetch_assoc()) { // Devuelve cada fila como un array asociativo
-            $array[] = static::createObject($registro);
+            $array[] = static::createObject($registro); // Transformamos a objeto los registros
         }
 
         // Liberar memoria
