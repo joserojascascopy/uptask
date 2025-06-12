@@ -22,7 +22,7 @@ class Usuario extends Model {
         $this->password = $args['password'] ?? '';
         $this->password2 = $args['password2'] ?? '';
         $this->token = $args['token'] ?? '';
-        $this->confirmado = $args['confirmado'] ?? '';
+        $this->confirmado = $args['confirmado'] ?? 0;
     }
 
     // Validación de "Crear una nueva cuenta"
@@ -50,5 +50,18 @@ class Usuario extends Model {
         }
 
         return self::$alertas;
+    }
+
+    // Hashea el password
+    public function hashPassword() {
+        $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+    }
+
+    // Generar un token unico
+    public function tokenGenerate() {
+        $this->token = uniqid();
+
+        // Token mas seguro (Debo modificar la base de datos porque md5 devuelve 32 carácteres)
+        // $this->token = md5(uniqid());
     }
 }

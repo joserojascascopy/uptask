@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Classes\Email;
 use Models\Usuario;
 use MVC\Router;
 
@@ -32,8 +33,33 @@ class LoginController {
             $usuario = new Usuario($_POST);
             // Validación para el formulario de crear una nueva cuenta
             $alertas = $usuario->createAccountValidation();
-            // Revisar si ya existe el usuario
-            $usuarioRegistrado = Usuario::where('email', $usuario->email);
+
+            if(empty($alertas)) {
+                // Revisar si ya existe el usuario
+                $usuarioRegistrado = Usuario::where('email', $usuario->email);
+
+                if($usuarioRegistrado) {
+                    $alertas = Usuario::setAlerta('error', 'El usuario ya esta registrado');
+                }else {
+                    // Hashear el password
+                    $usuario->hashPassword();
+                    // Eliminar password2
+                    unset($usuario->password2);
+                    // Generar el token unico
+                    $usuario->tokenGenerate();
+                    // Crear el nuevo usuario
+                    $resultado = $usuario->crear();
+                    // Enviar el correo con las instrucciones para confirmar la cuenta
+                    $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
+                    $sendEmail = $email->enviarConfirmacion();
+
+                    if($resultado && $sendEmail) {
+                        header('Location: /mensaje');
+                    }else {
+                        $alertas = Usuario::setAlerta('error', 'Hubo un error al crear la cuenta');
+                    }
+                }
+            }
         }
 
         $router->render('auth/crear', [

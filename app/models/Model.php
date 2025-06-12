@@ -18,7 +18,7 @@ class Model {
     protected static $alertas = [];
 
     public static function setAlerta($tipo, $message) {
-        static::$alertas[$tipo] = $message;
+        static::$alertas[$tipo][] = $message;
 
         return static::$alertas;
     }
@@ -27,31 +27,16 @@ class Model {
         return static::$alertas;
     }
 
-    // Crea un array con llave (las columnas de la DB) y valor (valores del objeto instanciado)
-    public function atributos() {
-        $atributos = [];
-
-        foreach(static::$columnDB as $column) {
-            if($column === 'id') continue;
-            
-            $atributos[$column] = $this->$column;
-        }
-
-        return $atributos;
-    }
-
-    // Sanitizar atributos
-    public function sanitizarAtributos() {
-        $atributos = $this->atributos();
-
-        $sanitizado = [];
-
-        foreach($atributos as $key => $value) {
-            $sanitizado[$key] = self::$db->escape_string($value);
-        }
-
-        return $sanitizado;
-    }
+    // // Guardar (Crea o actualiza)
+    // public function guardar() {
+    //     if(isset($this->id) && !$this->id === '') {
+    //         // Actualizar
+    //         return $this->actualizar();
+    //     }else {
+    //         // Crea un nuevo registro
+    //         return $this->crear();
+    //     }
+    // }
 
     // Crear
     public function crear() {
@@ -66,6 +51,37 @@ class Model {
         $resultado = self::$db->query($query);
 
         return $resultado;
+    }
+
+    // Actualizar
+    public function actualizar() {
+
+    }
+
+     // Sanitizar atributos
+    public function sanitizarAtributos() {
+        $atributos = $this->atributos();
+
+        $sanitizado = [];
+
+        foreach($atributos as $key => $value) {
+            $sanitizado[$key] = self::$db->escape_string($value);
+        }
+
+        return $sanitizado;
+    }
+
+    // Crea un array con llave (las columnas de la DB) y valor (valores del objeto instanciado)
+    public function atributos() {
+        $atributos = [];
+
+        foreach(static::$columnDB as $column) {
+            if($column === 'id') continue;
+            
+            $atributos[$column] = $this->$column;
+        }
+
+        return $atributos;
     }
 
     // Realiza una búsqueda en la DB usando una columna y un valor específico
