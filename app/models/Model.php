@@ -27,21 +27,21 @@ class Model {
         return static::$alertas;
     }
 
-    // // Guardar (Crea o actualiza)
-    // public function guardar() {
-    //     if(isset($this->id) && !$this->id === '') {
-    //         // Actualizar
-    //         return $this->actualizar();
-    //     }else {
-    //         // Crea un nuevo registro
-    //         return $this->crear();
-    //     }
-    // }
+    // Guardar (Crea o actualiza)
+    public function guardar() {
+        if(isset($this->id) && $this->id !== '') {
+            // Actualizar
+            return $this->actualizar();
+            echo 'Desde actualizar';
+        }else {
+            // Crea un nuevo registro
+            return $this->crear();
+        }
+    }
 
     // Crear
     public function crear() {
         $sanitizado = $this->sanitizarAtributos();
-
         $query = "INSERT INTO " . static::$table . "(";
         $query .= join(', ', array_keys($sanitizado));
         $query .= ") VALUES ('";
@@ -55,7 +55,21 @@ class Model {
 
     // Actualizar
     public function actualizar() {
+        $atributos = $this->sanitizarAtributos();
 
+        $valores = [];
+
+        foreach ($atributos as $key => $value) {
+            $valores[] = "{$key} = '{$value}'";
+        }
+
+        $query = "UPDATE " . static::$table . " SET ";
+        $query .= join(', ', $valores);
+        $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "'";
+
+        $resultado = self::$db->query($query);
+
+        return $resultado;
     }
 
      // Sanitizar atributos
@@ -76,7 +90,7 @@ class Model {
         $atributos = [];
 
         foreach(static::$columnDB as $column) {
-            if($column === 'id') continue;
+            if($column === 'id' &&  $this->id === '') continue;
             
             $atributos[$column] = $this->$column;
         }

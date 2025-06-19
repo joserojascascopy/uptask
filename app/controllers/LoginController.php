@@ -70,13 +70,40 @@ class LoginController {
     }
 
     public static function olvide(Router $router) {
+        // Instanciamos el objeto de usuario vacio para evitar error y poder usar los metodos no estaticos
+        $usuario = new Usuario;
+        // Array de alertas vacio
+        $alertas = Usuario::getAlertas();
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'];
+             /** @var Usuario|null $usuario */
+            $usuario = $usuario->where('email', $email);
+            
+            if(!$usuario) {
+                $alertas = Usuario::setAlerta('error', 'No existe este usuario');
+            }else {
+                // Generar el nuevo token unico
+                $usuario->tokenGenerate();
+                // Eliminar password2 del objeto para poder actualizar en la DB
+                unset($usuario->password2);
+                // Enviar el correo y actualizar el usuario con el nuevo token en la DB
+                $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
+                $email->enviarReestablecer();
 
+                $resultado = $usuario->guardar();
+
+                if($resultado && $email) {
+                    $alertas = Usuario::setAlerta('exito', 'Se ha enviadio un correo a su email con las instrucciones para reestablecer su contraseña');
+                }else {
+                    $alertas = Usuario::setAlerta('error', 'Ocurrio un error, intente de nuevo');
+                }
+            }
         }
 
         $router->render('auth/olvide', [
-            'titulo' => 'Olvidaste tu contraseña'
+            'titulo' => 'Olvidaste tu contraseña',
+            'alertas' => $alertas
         ]);
     }
 
@@ -118,6 +145,16 @@ class LoginController {
         }else {
             // Confirmar la cuenta
             $usuario->confirmado = 1;
+            // Eliminar el token
+            $usuario->token = '';
+            // Eliminar el "password2" del objeto para poder guardar en la DB
+            unset($usuario->password2);
+            // Actualizamos el usuario
+            $resultado = $usuario->guardar();
+
+            if($resultado) {
+                $alertas = Usuario::setAlerta('exito', 'Su cuenta ha sido confirmada con exito');
+            }
         }
 
         $router->render('auth/confirmar', [
