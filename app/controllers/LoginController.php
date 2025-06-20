@@ -76,27 +76,33 @@ class LoginController {
         $alertas = Usuario::getAlertas();
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-             /** @var Usuario|null $usuario */
-            $usuario = $usuario->where('email', $email);
+            $usuario = new Usuario($_POST);
+            // Validar el formulario
+            $alertas = $usuario->emailValidation();
             
-            if(!$usuario) {
-                $alertas = Usuario::setAlerta('error', 'No existe este usuario');
-            }else {
-                // Generar el nuevo token unico
-                $usuario->tokenGenerate();
-                // Eliminar password2 del objeto para poder actualizar en la DB
-                unset($usuario->password2);
-                // Enviar el correo y actualizar el usuario con el nuevo token en la DB
-                $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
-                $email->enviarReestablecer();
+            if(empty($alertas)) {
+                $email = $usuario->email;
+                /** @var Usuario|null $usuario */
+                $usuario = Usuario::where('email', $email);
 
-                $resultado = $usuario->guardar();
+                if($usuario && $usuario->confirmado) {
+                    // Generar el nuevo token unico
+                    $usuario->tokenGenerate();
+                    // Eliminar password2 del objeto para poder actualizar en la DB
+                    unset($usuario->password2);
+                    // Enviar el correo y actualizar el usuario con el nuevo token en la DB
+                    $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
+                    $email->enviarReestablecer();
 
-                if($resultado && $email) {
-                    $alertas = Usuario::setAlerta('exito', 'Se ha enviadio un correo a su email con las instrucciones para reestablecer su contraseña');
+                    $resultado = $usuario->guardar();
+
+                    if($resultado && $email) {
+                        $alertas = Usuario::setAlerta('exito', 'Se ha enviado un correo a su email con las instrucciones para reestablecer su contraseña');
+                    }else {
+                        $alertas = Usuario::setAlerta('error', 'Ocurrio un error, intente de nuevo');
+                    }
                 }else {
-                    $alertas = Usuario::setAlerta('error', 'Ocurrio un error, intente de nuevo');
+                    $alertas = Usuario::setAlerta('error', 'El usuario no existe o no esta confirmado');
                 }
             }
         }
@@ -108,14 +114,50 @@ class LoginController {
     }
 
     public static function reestablecer(Router $router) {
-        
+        // Instanciar el objeto de usuario para evitar errores y poder utilizar los metodos no estaticos
+        $usuario = new Usuario;
+        // Obtenemos el array de alertas vacio desde la clase
+        $alertas = Usuario::getAlertas();
+        $error = false;
+
+        // Accedemos al token del query string
+        $token = $_GET['token'];
+
+        // Encontrar al usuario por medio del token
+        /** @var Usuario|null $usuario */
+        $usuario = Usuario::where('token', $token);
+
+        if(!$usuario) {
+            $alertas = Usuario::setAlerta('error', 'Token no válido');
+            $error = true;
+        }
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+            // Guardar la nueva contraseña del usuario en la variable password
+            $password = $_POST['password'];
+            // Eliminar password2 del objeto usuario para evitar errores con la DB
+            $usuario->password = '';
+            unset($usuario->password2);
+            // Eliminar el token
+            $usuario->token = '';
+            // Asignar la nueva contraseña en el objeto de usuario
+            $usuario->password = $password;
+            // Hashear la nueva contraseña
+            $usuario->hashPassword();
+            // Actualizar el usuario en la DB
+            $resultado = $usuario->guardar();
+            
+            if($resultado) {
+                $alertas = Usuario::setAlerta('exito', 'Contraseña reestablecida correctamente');
+            }else {
+                $alertas = Usuario::setAlerta('exito', 'Ocurrio un error al reestablecer la contraseña');
+            }
         }
 
         $router->render('auth/reestablecer', [
-            'titulo' => 'Reestablecer contraseña'
+            'titulo' => 'Reestablecer contraseña',
+            'alertas' => $alertas,
+            'error' => $error
         ]);
     }
 

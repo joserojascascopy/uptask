@@ -25,7 +25,7 @@ class Usuario extends Model {
         $this->confirmado = $args['confirmado'] ?? 0;
     }
 
-    // Validación de "Crear una nueva cuenta"
+    // Validar el formulario de "Crear una nueva cuenta"
     public function createAccountValidation() {
         if(!$this->nombre) {
             self::$alertas['error'][] = 'El nombre no puede estar vacio';
@@ -47,6 +47,19 @@ class Usuario extends Model {
             if($this->password !== $this->password2) {
                 self::$alertas['error'][] = 'Las contraseñas no coinciden';
             }
+        }
+
+        return self::$alertas;
+    }
+
+    // Validar el formulario de la sección "Olvide mi contraseña"
+    public function emailValidation() {
+        if(!$this->email) {
+            self::$alertas['error'][] = 'El email es obligatorio';
+        }
+
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$alertas['error'][] = 'El email no es válido';
         }
 
         return self::$alertas;

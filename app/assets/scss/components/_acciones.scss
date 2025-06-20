@@ -6,7 +6,7 @@
 
     @include m.desktop {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
     }
 
     a {

@@ -6,8 +6,11 @@
     <div class="container-sm">
 
         <p class="descripcion-pagina text-center">Introduzca su nueva contraseña</p>
-
-        <form class="formulario" method="POST" action="/reestablecer">
+        <?php include_once __DIR__ . '/../templates/alertas.php'; 
+    
+        if($error) return;
+        ?>
+        <form class="formulario" method="POST">
             <div class="form-group">
                 <label for="password">Contraseña:</label>
                 <input type="password" id="password" name="password" placeholder="Tu contraseña">

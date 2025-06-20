@@ -4,10 +4,9 @@
     <p class="text-center tagline">Crea y Administra tus proyectos</p>
 
     <div class="container-sm">
-        <?php include_once __DIR__ . '/../templates/alertas.php'; ?>
         <p class="descripcion-pagina text-center">Recupera tu acceso a Uptask</p>
-
-        <form class="formulario" method="POST" action="/olvide">
+        <?php include_once __DIR__ . '/../templates/alertas.php'; ?>
+        <form class="formulario" method="POST" action="/olvide" novalidate>
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="Tu email">
