@@ -68,7 +68,17 @@ class Usuario extends Model {
     // Validar el formulario de la sección "Reestablecer contraseña"
     public function passwordValidation() {
         if(!$this->password) {
-            self::$alertas['error'][] = 'Debes introducir una nueva contraseña';
+            self::$alertas['error'][] = 'La contraseña es obligatoria';
+        }else {
+            // Validación por cantidad de carácteres
+            if(strlen($this->password) < 6) {
+                self::$alertas['error'][] = 'La contraseña debe contener al menos 6 carácteres';
+            }
+
+            // Validación de que ambas contraseñas sean iguales
+            if($this->password !== $this->password2) {
+                self::$alertas['error'][] = 'Las contraseñas no coinciden';
+            }
         }
 
         return self::$alertas;
