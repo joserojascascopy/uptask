@@ -65,6 +65,15 @@ class Usuario extends Model {
         return self::$alertas;
     }
 
+    // Validar el formulario de la sección "Reestablecer contraseña"
+    public function passwordValidation() {
+        if(!$this->password) {
+            self::$alertas['error'][] = 'Debes introducir una nueva contraseña';
+        }
+
+        return self::$alertas;
+    }
+
     // Hashea el password
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);

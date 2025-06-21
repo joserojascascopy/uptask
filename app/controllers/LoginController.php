@@ -123,6 +123,9 @@ class LoginController {
         // Accedemos al token del query string
         $token = $_GET['token'];
 
+        // Redirigir si no existe el token
+        if(!$token) header('Location: /');
+
         // Encontrar al usuario por medio del token
         /** @var Usuario|null $usuario */
         $usuario = Usuario::where('token', $token);
@@ -133,24 +136,28 @@ class LoginController {
         }
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Guardar la nueva contraseña del usuario en la variable password
-            $password = $_POST['password'];
-            // Eliminar password2 del objeto usuario para evitar errores con la DB
-            $usuario->password = '';
-            unset($usuario->password2);
-            // Eliminar el token
-            $usuario->token = '';
-            // Asignar la nueva contraseña en el objeto de usuario
-            $usuario->password = $password;
-            // Hashear la nueva contraseña
-            $usuario->hashPassword();
-            // Actualizar el usuario en la DB
-            $resultado = $usuario->guardar();
+            // Acceder a la nueva contraseña por el metodo POST
+            $newPassword = new Usuario($_POST);
+            // Validar el formulario
+            $alertas = $newPassword->passwordValidation();
+
+            if(empty($alertas)) {
+                // Eliminar password2 del objeto usuario para evitar errores con la DB
+                unset($usuario->password2);
+                // Eliminar el token
+                $usuario->token = '';
+                // Asignar la nueva contraseña en el objeto de usuario
+                $usuario->password = $newPassword->password;
+                // Hashear la nueva contraseña
+                $usuario->hashPassword();
+                // Actualizar el usuario en la DB
+                $resultado = $usuario->guardar();
             
-            if($resultado) {
-                $alertas = Usuario::setAlerta('exito', 'Contraseña reestablecida correctamente');
-            }else {
-                $alertas = Usuario::setAlerta('exito', 'Ocurrio un error al reestablecer la contraseña');
+                if($resultado) {
+                    $alertas = Usuario::setAlerta('exito', 'Contraseña reestablecida correctamente');
+                }else {
+                    $alertas = Usuario::setAlerta('exito', 'Ocurrio un error al reestablecer la contraseña');
+                }
             }
         }
 
