@@ -118,7 +118,7 @@ class LoginController {
         $usuario = new Usuario;
         // Obtenemos el array de alertas vacio desde la clase
         $alertas = Usuario::getAlertas();
-        $error = false;
+        $error = true;
 
         // Accedemos al token del query string
         $token = $_GET['token'];
@@ -132,7 +132,7 @@ class LoginController {
 
         if(!$usuario) {
             $alertas = Usuario::setAlerta('error', 'Token no válido');
-            $error = true;
+            $error = false;
         }
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -155,6 +155,7 @@ class LoginController {
             
                 if($resultado) {
                     $alertas = Usuario::setAlerta('exito', 'Contraseña reestablecida correctamente');
+                    $error = false;
                 }else {
                     $alertas = Usuario::setAlerta('exito', 'Ocurrio un error al reestablecer la contraseña');
                 }
