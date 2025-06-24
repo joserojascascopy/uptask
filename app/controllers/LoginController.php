@@ -8,14 +8,56 @@ use MVC\Router;
 
 class LoginController {
     public static function login(Router $router) {
+        // Instanciamos el objeto de "Usuario"
+        $auth = new Usuario;
+        // Array de alertas vacio
+        $alertas = Usuario::getAlertas();
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $auth = new Usuario($_POST);
+            // Asignar email y contraseña a una variable
+            $email = $auth->email;
+            $password = $auth->password;
+            // Validación para el formulario de "Iniciar Sesión"
+            $alertas = $auth->loginValidation();
 
+            if(empty($alertas)) {
+                // Revisar si existe el usuario en la DB por medio del email
+                /** @var Usuario|null $usuario */
+                $usuario = Usuario::where('email', $email);
+
+                if($usuario && $usuario->confirmado) {
+                    // Verificar que la contraseña es correcta
+                    $resultado = $usuario->passwordVerify($password);
+                    
+                    if($resultado) {
+                        // Iniciar Sesión
+                        session_start();
+
+                        $_SESSION = [
+                            'id' => $usuario->id,
+                            'nombre' => $usuario->nombre,
+                            'email' => $email,
+                            'login' => true
+                        ];
+
+                        // Redirigir a la sección de proyectos
+                        header('Location: /proyectos');
+
+                    }else {
+                        $alertas = Usuario::setAlerta('error', 'La contraseña es incorrecta');
+                    }
+
+                }else {
+                    $alertas = Usuario::setAlerta('error', 'El usuario no existe o no esta confirmado');
+                }
+            }
         }
 
         // Render de la vista Login
         $router->render('auth/login', [
-            'titulo' => 'Login'
+            'titulo' => 'Login',
+            'alertas' => $alertas
         ]);
     }
 

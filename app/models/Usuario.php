@@ -52,6 +52,23 @@ class Usuario extends Model {
         return self::$alertas;
     }
 
+    // Valildar el formulario de "Iniciar Sesión"
+    public function loginValidation() {
+        if(!$this->email) {
+            self::$alertas['error'][] = 'El email es obligatorio';
+        }
+
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$alertas['error'][] = 'El email no es válido';
+        }
+
+        if(!$this->password) {
+            self::$alertas['error'][] = 'La contraseña es obligatoria';
+        }
+
+        return self::$alertas;
+    }
+
     // Validar el formulario de la sección "Olvide mi contraseña"
     public function emailValidation() {
         if(!$this->email) {
@@ -63,6 +80,13 @@ class Usuario extends Model {
         }
 
         return self::$alertas;
+    }
+
+    // Verificar que la contraseña sea la correcta
+    public function passwordVerify($password) {
+        $resultado = password_verify($password, $this->password);
+
+        return $resultado;
     }
 
     // Validar el formulario de la sección "Reestablecer contraseña"

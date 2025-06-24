@@ -6,8 +6,8 @@
     <div class="container-sm">
 
         <p class="descripcion-pagina text-center">Iniciar Sesión</p>
-
-        <form class="formulario" method="POST" action="/">
+        <?php include_once __DIR__ . '/../templates/alertas.php'; ?>
+        <form class="formulario" method="POST">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="Tu email">
