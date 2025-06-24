@@ -41,8 +41,8 @@ class LoginController {
                             'login' => true
                         ];
 
-                        // Redirigir a la sección de proyectos
-                        header('Location: /proyectos');
+                        // Redirigir al usuario al dashboard
+                        header('Location: /dashboard');
 
                     }else {
                         $alertas = Usuario::setAlerta('error', 'La contraseña es incorrecta');
@@ -62,7 +62,11 @@ class LoginController {
     }
 
     public static function logout() {
-        echo "Desde logout";
+        session_start();
+
+        $_SESSION = [];
+
+        session_destroy();
     }
 
     public static function crear(Router $router) {
