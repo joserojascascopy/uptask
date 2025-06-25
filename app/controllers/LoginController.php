@@ -67,6 +67,8 @@ class LoginController {
         $_SESSION = [];
 
         session_destroy();
+
+        header('Location: /');
     }
 
     public static function crear(Router $router) {

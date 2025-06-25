@@ -1,5 +1,6 @@
 <?php
 
+use Controllers\DashboardController;
 use Controllers\LoginController;
 use MVC\Router;
 
@@ -33,3 +34,7 @@ $router->post('/reestablecer', [LoginController::class, 'reestablecer']);
 
 $router->get('/mensaje', [LoginController::class, 'mensaje']);
 $router->get('/confirmar', [LoginController::class, 'confirmar']);
+
+// Dashboard
+
+$router->get('/dashboard', [DashboardController::class, 'index']);
