@@ -1,4 +1,4 @@
-<aside class="sidebar">
+<aside class="sidebar mostrar">
     <h2>Uptask</h2>
 
     <nav class="sidebar-nav">

@@ -1,0 +1,38 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+@use 'sass:color';
+
+.sidebar {
+    max-width: 20rem;
+    width: 95%;
+    background-color: v.$indigo;
+    padding: 0rem 2rem;
+    
+    h2 {
+        color: v.$blanco;
+        margin: 0;
+        text-align: center;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        padding-top: 2rem;
+        transition-property: background-color;
+        transition-duration: 300ms;
+
+        a {
+            color: v.$blanco;
+            margin-bottom: 1rem;
+            padding: .5rem 1rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 1.25rem;
+
+            &:hover {
+                background-color: color.adjust(v.$indigo, $lightness: -30%);
+                border-radius: .5rem;
+            }
+        }
+    }
+}

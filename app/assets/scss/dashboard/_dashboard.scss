@@ -1,0 +1,12 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.dashboard {
+    background-color: v.$grisClaro;
+    display: flex;
+    min-height: 100dvh;
+
+    .main {
+        flex: 1; // Para que pueda ocupar todo el espacio restante
+    }
+}
