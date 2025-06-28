@@ -9,4 +9,13 @@
     .main {
         flex: 1; // Para que pueda ocupar todo el espacio restante
     }
+
+    .contenido {
+        padding: 1rem 2rem;
+
+        .nombre-pagina {
+            margin: 0;
+            text-align: center;
+        }
+    }
 }
