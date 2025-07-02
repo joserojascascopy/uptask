@@ -124,6 +124,15 @@ class Model {
         return $array;
     }
 
+    // Realiza una búsqueda en la DB usando una columna y un valor específico, y obtiene todos los registros
+    public static function belongsTo($column, $value) {
+        $query = "SELECT * FROM " . static::$table . " WHERE {$column} = '{$value}'";
+
+        $resultados = self::consultaSQL($query);
+
+        return $resultados;
+    }
+
     public static function createObject($registro) {
         $object = new static; // Crea un objeto en la clase donde se esta heredando con los atributos de dicha clase
 

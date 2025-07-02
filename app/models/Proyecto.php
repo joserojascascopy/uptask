@@ -3,7 +3,7 @@
 namespace Models;
 use Models\Model;
 
-class Proyectos extends Model {
+class Proyecto extends Model {
     // Atributos de la DB
     protected static $table = 'proyectos';
     protected static $columnDB = ['id', 'proyecto', 'url', 'usuario_id'];
@@ -18,5 +18,18 @@ class Proyectos extends Model {
         $this->proyecto = $args['proyecto'] ?? '';
         $this->url = $args['url'] ?? '';
         $this->usuario_id = $args['usuario_id'] ?? '';
+    }
+
+    public function projectValidate() {
+        if(!$this->proyecto) {
+            self::$alertas['error'][] = 'El nombre del proyecto es obligatorio';
+        }
+
+        return self::$alertas;
+    }
+
+    public function urlGenerate() {
+        $hash = md5(uniqid());
+        $this->url = $hash;
     }
 }

@@ -37,12 +37,17 @@ $router->get('/confirmar', [LoginController::class, 'confirmar']);
 
 // Dashboard
 
-$router->get('/dashboard', [DashboardController::class, 'proyectos']);
+$router->get('/dashboard', [DashboardController::class, 'index']);
 
 // Crear Proyecto
 
 $router->get('/crear-proyecto', [DashboardController::class, 'crear']);
 $router->post('/crear-proyecto', [DashboardController::class, 'crear']);
+
+// Proyecto
+
+$router->get('/proyecto', [DashboardController::class, 'proyecto']);
+$router->post('/proyecto', [DashboardController::class, 'proyecto']);
 
 // Perfil
 

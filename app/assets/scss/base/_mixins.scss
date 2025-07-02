@@ -1,12 +1,6 @@
 @use 'variables' as v;
 @use 'sass:color';
 
-@mixin telefono {
-    @media (min-width: v.$telefono) {
-        @content;
-    }
-}
-
 @mixin tablet {
     @media (min-width: v.$tablet) {
         @content;
