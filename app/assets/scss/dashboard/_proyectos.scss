@@ -33,9 +33,16 @@
         display: flex;
         align-items: center;
         border-radius: .5rem;
-        color: v.$blanco;
         font-weight: 600;
         line-height: 2;
         padding-left: 2rem;
+
+        &:hover {
+            background-color: color.adjust(v.$indigo, $lightness: -5%);
+        }
+
+        a {
+            color: v.$blanco;
+        }
     }
 }

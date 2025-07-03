@@ -1,0 +1,21 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+@use 'sass:color';
+
+.container-nueva-tarea {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+
+    .agregar-tarea {
+        background-color: v.$cian;
+        color: v.$blanco;
+        cursor: pointer;
+        padding: 1rem 3rem;
+        font-weight: 600;
+
+        &:hover {
+            background-color: color.adjust(v.$cian, $lightness: -10%);
+        }
+    }
+}
