@@ -17,15 +17,51 @@
                     <input type="text" id="tarea" name="tarea" placeholder="Nombre de la tarea"/>
                 </div>
 
-                <div class="btn-creartarea acciones">
-                    <input type="submit" value="Añadir Tarea"/>
+                <div class="opciones">
+                    <input type="submit" class="submit-tarea" value="Añadir Tarea"/>
                     <button type="button" class="cerrar-modal">Cancelar</button>
                 </div>
 
             </form>
         `;
 
+        setTimeout(() => {
+            const formulario = document.querySelector('.formulario');
+            formulario.classList.add('animar');
+        }, 0);
+
+        // Delegation JS
+        modal.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if(e.target.classList.contains('cerrar-modal') || e.target.classList.contains('modal')) {
+                // document.querySelector('body').removeChild(modal);
+                const formulario = document.querySelector('.formulario');
+                formulario.classList.add('cerrar');
+
+                setTimeout(() => {
+                    modal.remove();
+                }, 500);
+            }
+        });
+
         document.querySelector('body').appendChild(modal);
     }
 
 })();
+
+// Modelo de concurrencia y loop de eventos
+
+// console.log('1');
+
+// setTimeout(() => { // Pertenece al queue, primero se ejecuta los que pertenecen a stack (funciones)
+//     console.log('2');
+// }, 0);
+
+// console.log('3');
+
+// setTimeout(() => {
+//     console.log('4');
+// }, 40);
+
+// console.log('5');

@@ -8,9 +8,76 @@
     z-index: 100;
     top: 0;
     left: 0;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    right: 0;
+    bottom: 0;
+    // height: 100vh;
+    // width: 100vw;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+
+    .formulario {
+        max-width: 60rem;
+        width: 95%;
+        padding: 2rem;
+        border-radius: 1rem;
+        background-color: v.$blanco;
+        margin: 0 auto;
+        transform: translateY(-30rem);
+        transition-property: all;
+        transition-duration: 400ms;
+        transition-timing-function: ease-in;
+        opacity: 0;
+
+        // display: block, none; no se pueden animar, visibility: hidden, visible; si
+
+        &.animar {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 1;
+        }
+
+        &.cerrar {
+            transform: translateY(-200%);
+            opacity: 0;
+        }
+
+        legend {
+            font-size: 2rem;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .cerrar-modal {
+            background-color: v.$naranja;
+            color: v.$blanco;
+            cursor: pointer;
+            padding: 1rem 3rem;
+            font-weight: 600;
+
+            &:hover {
+                background-color: color.adjust(v.$naranja, $lightness: -10%);
+            }
+        }
+
+        .submit-tarea {
+            background-color: v.$indigo;
+            color: v.$blanco;
+            cursor: pointer;
+            padding: 1rem 3rem;
+            font-weight: 600;
+
+            &:hover {
+                background-color: color.adjust(v.$indigo, $lightness: -10%);
+            }   
+        }
+
+        .opciones {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
 }
