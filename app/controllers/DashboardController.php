@@ -51,6 +51,7 @@ class DashboardController {
         $router->render('dashboard/proyecto', [
             'titulo' => $titulo,
             'nombre' => $_SESSION['nombre'],
+            'usuario_id' => $usuario_id,
             'alertas' => $alertas
         ]);
     }

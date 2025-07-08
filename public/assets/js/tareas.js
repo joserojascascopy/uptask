@@ -67,7 +67,7 @@
         agregarTarea(tarea);
     }
 
-    // Agregar la tarea al proyecto (Mandar los datos al servidor)
+    // Agregar la tarea al proyecto actual (Mandar los datos al servidor backend)
     function agregarTarea(tarea) {
         
     }
