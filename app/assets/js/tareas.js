@@ -68,8 +68,32 @@
     }
 
     // Agregar la tarea al proyecto actual (Mandar los datos al servidor backend)
-    function agregarTarea(tarea) {
-        
+    async function agregarTarea(tarea) {
+        // Construir la petición
+        const datos = new FormData();
+
+        // Obtenemos la url del query string
+        const params = new URLSearchParams(window.location.search);
+        const url = params.get('url');
+
+        // const proyecto = Object.fromEntries(params.entries());
+        // const url = proyecto.url;
+
+        datos.append('nombre', tarea);
+        datos.append('url', url);
+
+        try {
+            const url = 'http://localhost:3000/api/tarea';
+            const res = await fetch(url, {
+                method: 'POST',
+                body: datos
+            });
+
+            const body = await res.json();
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     // Muestra un mensaje en la vista

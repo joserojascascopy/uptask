@@ -2,6 +2,7 @@
 
 use Controllers\DashboardController;
 use Controllers\LoginController;
+use Controllers\TareaController;
 use MVC\Router;
 
 $router = new Router;
@@ -48,6 +49,13 @@ $router->post('/crear-proyecto', [DashboardController::class, 'crear']);
 
 $router->get('/proyecto', [DashboardController::class, 'proyecto']);
 $router->post('/proyecto', [DashboardController::class, 'proyecto']);
+
+// Enpoints para las tareas
+
+$router->get('/api/tareas', [TareaController::class, 'index']);
+$router->post('/api/tarea', [TareaController::class, 'crear']);
+$router->post('/api/tarea-actualizar', [TareaController::class, 'actualizar']);
+$router->post('/api/tarea-eliminar', [TareaController::class, 'eliminar']);
 
 // Perfil
 
