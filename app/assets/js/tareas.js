@@ -1,6 +1,8 @@
 // IIFE: immediately invoked function expression, or IIFE (pronounced iffy), is a function that is called immediately after it is defined.
 
 (function () {
+    obtenerTareas();
+
     // Boton para mostrar el Modal de Agregar nueva tarea
     const nuevaTareaBtn = document.querySelector('.agregar-tarea');
     nuevaTareaBtn.addEventListener('click', mostrarFormulario);
@@ -83,13 +85,26 @@
         datos.append('url', url);
 
         try {
-            const url = 'http://localhost:3000/api/tarea';
-            const res = await fetch(url, {
+            const apiUrl = 'http://localhost:3000/api/tarea';
+            const res = await fetch(apiUrl, {
                 method: 'POST',
                 body: datos
             });
 
             const body = await res.json();
+
+            if(!body.success) {
+                mostrarAlerta(body.message, 'error', document.querySelector('.formulario legend'));
+
+                return;
+            }
+            
+            mostrarAlerta(body.message, 'exito', document.querySelector('.formulario legend'));
+
+            const modal = document.querySelector('.modal');
+            setTimeout(() => {
+                modal.remove();
+            }, 5000);
 
         } catch (error) {
             console.log(error);
@@ -115,9 +130,29 @@
         // Eliminar alerta luego de los 4 segundos
         setTimeout(() => {
             alerta.remove();
-        }, 4000);
+        }, 5000);
     }
 
+    // Obtener todas las tareas desde el backend
+    async function obtenerTareas() {
+        const params = new URLSearchParams(window.location.search);
+        const url = params.get('url');
+
+        try {
+            const apiUrl = `http://localhost:3000/api/tareas?url=${url}`;
+            const res = await fetch(apiUrl);
+            const body = await res.json();
+
+            renderTareas(body.tareas);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    function renderTareas(tareas) {
+        
+    }
 })();
 
 // Modelo de concurrencia y loop de eventos
