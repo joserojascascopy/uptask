@@ -19,3 +19,56 @@
         }
     }
 }
+
+.listado-tareas {
+    padding: 2rem 0rem;
+
+    .no-tareas {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+}
+
+.tarea {
+    padding: .5rem 2rem;
+    border-bottom: 2px solid color.adjust(v.$grisClaro, $lightness: -10%);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:last-of-type {
+        border-bottom: none;
+    }
+
+    .opciones {
+        display: flex;
+        gap: .5rem;
+
+        button {
+            padding: .5rem 1rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+
+        .pendiente {
+            background-color: v.$naranja;
+            color: v.$blanco;
+        }
+        
+        .completado {
+            background-color: v.$azul;
+            color: v.$blanco;
+            cursor: default;
+        }
+
+        .eliminar-tarea {
+            background-color: v.$rojo;
+            color: v.$blanco;
+        }
+    }
+}

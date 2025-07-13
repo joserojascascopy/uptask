@@ -5,10 +5,12 @@
 .dashboard {
     background-color: v.$grisClaro;
     display: flex;
-    min-height: 100dvh;
+    height: 100vh;
 
     .main {
         flex: 1; // Para que pueda ocupar todo el espacio restante
+        overflow-y: scroll;
+        scrollbar-width: none;
     }
 
     .contenido {

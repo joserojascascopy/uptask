@@ -143,15 +143,65 @@
             const res = await fetch(apiUrl);
             const body = await res.json();
 
-            renderTareas(body.tareas);
+            const {success, tareas} = body;
+
+            renderTareas(tareas);
 
         } catch (error) {
             console.log(error);
         }
     }
 
+    // Render de las tareas en el frontend
     function renderTareas(tareas) {
-        
+        const contenedorTareas = document.querySelector('#listado-tareas');
+
+        if(tareas.length === 0) {
+            const textoNoTareas = document.createElement('LI');
+            textoNoTareas.textContent = 'No tienes ninguna tarea para este proyecto';
+            textoNoTareas.classList.add('no-tareas');
+            
+            contenedorTareas.appendChild(textoNoTareas);
+
+            return;
+        }
+
+        const estados = {
+            0: 'Pendiente',
+            1: 'Completado'
+        }
+
+        tareas.forEach(tarea => {
+            const contenedorTarea = document.createElement('LI');
+            contenedorTarea.dataset.tareaId = tarea.id;
+            contenedorTarea.classList.add('tarea');
+
+            const nombreTarea = document.createElement('P');
+            nombreTarea.textContent = tarea.nombre;
+
+            const opcionesDiv = document.createElement('DIV');
+            opcionesDiv.classList.add('opciones');
+
+            // Botones
+            const btnEstadoTarea = document.createElement('BUTTON');
+            btnEstadoTarea.classList.add('estado-tarea');
+            btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
+            btnEstadoTarea.textContent = estados[tarea.estado];
+            btnEstadoTarea.dataset.tareaEstado = tarea.estado;
+
+            const bntEliminarTarea = document.createElement('BUTTON');
+            bntEliminarTarea.classList.add('eliminar-tarea');
+            bntEliminarTarea.dataset.tareaId = tarea.id;
+            bntEliminarTarea.textContent = 'Eliminar';
+
+            opcionesDiv.appendChild(btnEstadoTarea);
+            opcionesDiv.appendChild(bntEliminarTarea);
+
+            contenedorTarea.appendChild(nombreTarea);
+            contenedorTarea.appendChild(opcionesDiv);
+
+            contenedorTareas.appendChild(contenedorTarea);
+        });
     }
 })();
 
