@@ -66,12 +66,21 @@ class TareaController {
 
             $resultado = $tarea->guardar();
 
-            if($resultado) {
+            if($resultado['resultado']) {
                 http_response_code(200);
 
                 $response = [
                     'success' => true,
-                    'message' => 'Tarea agregada correctamente'
+                    'message' => 'Tarea agregada correctamente',
+                    'id' => $resultado['id'],
+                    'proyecto_id' => $proyecto->id
+                ];
+
+                echo json_encode($response);
+            }else {
+                $response = [
+                    'success' => false,
+                    'message' => 'Hubo un error al agregar la tarea'
                 ];
 
                 echo json_encode($response);

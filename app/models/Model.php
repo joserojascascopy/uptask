@@ -50,7 +50,10 @@ class Model {
 
         $resultado = self::$db->query($query);
 
-        return $resultado;
+        return [
+            'resultado' => $resultado,
+            'id' => self::$db->insert_id
+        ];
     }
 
     // Actualizar

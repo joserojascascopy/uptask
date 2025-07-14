@@ -1,6 +1,8 @@
 // IIFE: immediately invoked function expression, or IIFE (pronounced iffy), is a function that is called immediately after it is defined.
 
 (function () {
+    let tareas = [];
+
     obtenerTareas();
 
     // Boton para mostrar el Modal de Agregar nueva tarea
@@ -101,7 +103,20 @@
             
             mostrarAlerta(body.message, 'exito', document.querySelector('.formulario legend'));
 
+            // Agregar el objeto de tarea al global de tareas
+            const tareaObject = {
+                id: String(body.id),
+                nombre: tarea,
+                estado: '0',
+                proyecto_id: body.proyecto_id
+            }
+
+            tareas = [...tareas, tareaObject];
+
+            renderTareas();
+
             const modal = document.querySelector('.modal');
+
             setTimeout(() => {
                 modal.remove();
             }, 5000);
@@ -143,9 +158,9 @@
             const res = await fetch(apiUrl);
             const body = await res.json();
 
-            const {success, tareas} = body;
+            tareas = body.tareas;
 
-            renderTareas(tareas);
+            renderTareas();
 
         } catch (error) {
             console.log(error);
@@ -153,7 +168,10 @@
     }
 
     // Render de las tareas en el frontend
-    function renderTareas(tareas) {
+    function renderTareas() {
+        // Limpiar las tareas anteriores
+        limpiarTareas();
+
         const contenedorTareas = document.querySelector('#listado-tareas');
 
         if(tareas.length === 0) {
@@ -202,6 +220,14 @@
 
             contenedorTareas.appendChild(contenedorTarea);
         });
+    }
+
+    function limpiarTareas() {
+        const tareaAnterior = document.querySelector('#listado-tareas');
+        
+        while(tareaAnterior.firstChild) {
+            tareaAnterior.removeChild(tareaAnterior.firstChild);
+        }
     }
 })();
 
