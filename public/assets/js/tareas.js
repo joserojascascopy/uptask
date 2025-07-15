@@ -126,6 +126,55 @@
         }
     }
 
+    // el argumento tarea de esta funcion es una copia de la tarea del objeto tareas, no debemos modificar el objeto original antes de realizar cualquier accion
+    function cambiarEstadoTarea(tarea) {
+        const nuevoEstado = tarea.estado === '1' ? '0' : '1';
+        tarea.estado = nuevoEstado;
+
+        actualizarTarea(tarea);
+    }
+
+    async function actualizarTarea(tarea) {
+        const {id, nombre, estado, proyecto_id} = tarea;
+
+        const params = new URLSearchParams(window.location.search);
+        const url = params.get('url');
+
+        const datos = new FormData();
+        datos.append('id', id);
+        datos.append('nombre', nombre);
+        datos.append('estado', estado);
+        datos.append('proyecto_id', proyecto_id);
+        datos.append('url', url);
+
+        try {
+            const apiUrl = 'http://localhost:3000/api/tarea-actualizar';
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                body: datos
+            })
+
+            const body = await res.json();
+
+            if(body.success) {
+                mostrarAlerta(body.mensaje, 'exito', document.querySelector('.container-nueva-tarea'));
+                
+                tareas = tareas.map(tareaMemoria => {
+                    if(tareaMemoria.id === body.id) {
+                        tareaMemoria.estado = body.estado;
+                    }
+
+                    return tareaMemoria; // !Important el return, o sino retorna cada elemento del array como undefined
+                });
+
+                renderTareas();
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // Muestra un mensaje en la vista
     function mostrarAlerta(mensaje, tipo, referencia) {
         // Eliminar la alerta previa
@@ -206,6 +255,9 @@
             btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
             btnEstadoTarea.textContent = estados[tarea.estado];
             btnEstadoTarea.dataset.tareaEstado = tarea.estado;
+            btnEstadoTarea.ondblclick = function() {
+                cambiarEstadoTarea({...tarea});
+            }
 
             const bntEliminarTarea = document.createElement('BUTTON');
             bntEliminarTarea.classList.add('eliminar-tarea');

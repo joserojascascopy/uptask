@@ -89,9 +89,45 @@ class TareaController {
     }
 
     public static function actualizar() {
-        header('Content-Type: application/json');
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            header('Content-Type: application/json');
+            isAuth();
+            $usuario_id = $_SESSION['id'];
+            // url del proyecto enviado desde el frontend
+            $url = $_POST['url'];
+            // Verificar que exista el proyecto
+            /** @var Proyecto|null $proyecto */
+            $proyecto = Proyecto::where('url', $url);
 
-        $body = json_decode(file_get_contents('php://input'), true);
+            if(!$proyecto || $usuario_id !== $proyecto->usuario_id) {
+                http_response_code(404); // Codigo correcto para "no encontrado"
+
+                $response = [
+                    'success' => false,
+                    'message' => 'Hubo un error al actualizar la tarea'
+                ];
+
+                echo json_encode($response);
+
+                return;
+            }
+
+            $tarea = new Tarea($_POST);
+
+            $resultado = $tarea->guardar();
+
+            if($resultado) {
+                $response = [
+                    'success' => true,
+                    'id' => $tarea->id,
+                    'proyecto_id' => $proyecto->id,
+                    'mensaje' => 'Tarea actualizada correctamente',
+                    'estado' => $tarea->estado
+                ];
+
+                echo json_encode($response);
+            }
+        }
     }
 
     public static function eliminar() {
