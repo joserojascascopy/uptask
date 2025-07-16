@@ -14,13 +14,13 @@ class TareaController {
         // Obtenemos la url del proyecto del query string
         $url = $_GET['url'];
 
-        if(!$url) header('Location: /dashboard');
+        if (!$url) header('Location: /dashboard');
 
         // Buscamos el proyecto con la url
         /** @var Proyecto|null $proyecto */
         $proyecto = Proyecto::where('url', $url);
 
-        if(!$proyecto || $usuario_id !== $proyecto->usuario_id) header('Location: /404');
+        if (!$proyecto || $usuario_id !== $proyecto->usuario_id) header('Location: /404');
 
         $proyecto_id = $proyecto->id;
 
@@ -37,7 +37,7 @@ class TareaController {
     }
 
     public static function crear() {
-        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json'); // Indica al navegador (o a quien consuma el endpoint) que la respuesta es JSON. O sino el navegador o herramientas pueden mostrarlo como text/html
             isAuth();
             $usuario_id = $_SESSION['id'];
@@ -47,7 +47,7 @@ class TareaController {
             /** @var Proyecto|null $proyecto */
             $proyecto = Proyecto::where('url', $url);
 
-            if(!$proyecto || $usuario_id !== $proyecto->usuario_id) {
+            if (!$proyecto || $usuario_id !== $proyecto->usuario_id) {
                 http_response_code(404); // Codigo correcto para "no encontrado"
 
                 $response = [
@@ -61,12 +61,12 @@ class TareaController {
             }
 
             $tarea = new Tarea($_POST);
-            
+
             $tarea->proyecto_id = $proyecto->id;
 
             $resultado = $tarea->guardar();
 
-            if($resultado['resultado']) {
+            if ($resultado['resultado']) {
                 http_response_code(200);
 
                 $response = [
@@ -77,7 +77,7 @@ class TareaController {
                 ];
 
                 echo json_encode($response);
-            }else {
+            } else {
                 $response = [
                     'success' => false,
                     'message' => 'Hubo un error al agregar la tarea'
@@ -89,7 +89,7 @@ class TareaController {
     }
 
     public static function actualizar() {
-        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
             isAuth();
             $usuario_id = $_SESSION['id'];
@@ -99,7 +99,7 @@ class TareaController {
             /** @var Proyecto|null $proyecto */
             $proyecto = Proyecto::where('url', $url);
 
-            if(!$proyecto || $usuario_id !== $proyecto->usuario_id) {
+            if (!$proyecto || $usuario_id !== $proyecto->usuario_id) {
                 http_response_code(404); // Codigo correcto para "no encontrado"
 
                 $response = [
@@ -116,12 +116,12 @@ class TareaController {
 
             $resultado = $tarea->guardar();
 
-            if($resultado) {
+            if ($resultado) {
                 $response = [
                     'success' => true,
                     'id' => $tarea->id,
                     'proyecto_id' => $proyecto->id,
-                    'mensaje' => 'Tarea actualizada correctamente',
+                    'message' => 'Tarea actualizada correctamente',
                     'estado' => $tarea->estado
                 ];
 
@@ -131,8 +131,42 @@ class TareaController {
     }
 
     public static function eliminar() {
-        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            header('Content-Type: application/json');
+            isAuth();
+            $usuario_id = $_SESSION['id'];
+            // url del proyecto enviado desde el frontend
+            $url = $_POST['url'];
+            // Verificar que exista el proyecto
+            /** @var Proyecto|null $proyecto */
+            $proyecto = Proyecto::where('url', $url);
 
-        $body = json_decode(file_get_contents('php://input'), true);
+            if (!$proyecto || $usuario_id !== $proyecto->usuario_id) {
+                http_response_code(404); // Codigo correcto para "no encontrado"
+
+                $response = [
+                    'success' => false,
+                    'message' => 'Hubo un error al eliminar la tarea'
+                ];
+
+                echo json_encode($response);
+
+                return;
+            }
+
+            $tarea = new Tarea($_POST);
+            
+            $resultado = $tarea->eliminar();
+
+            if ($resultado) {
+                $response = [
+                    'success' => true,
+                    'id' => $tarea->id,
+                    'message' => 'Tarea eliminada correctamente'
+                ];
+
+                echo json_encode($response);
+            }
+        }
     }
 }

@@ -61,10 +61,10 @@
         // Obtenemos el valor del input "Añadir Tarea"
         const tarea = document.getElementById('tarea').value.trim();
         // Validamos el campo de añadir tarea, si esta vacio, mostramos la alerta
-        if(tarea === '') {
+        if (tarea === '') {
             // Mostrar una alerta de error
             mostrarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'));
-            
+
             return;
         }
 
@@ -95,12 +95,12 @@
 
             const body = await res.json();
 
-            if(!body.success) {
+            if (!body.success) {
                 mostrarAlerta(body.message, 'error', document.querySelector('.formulario legend'));
 
                 return;
             }
-            
+
             mostrarAlerta(body.message, 'exito', document.querySelector('.formulario legend'));
 
             // Agregar el objeto de tarea al global de tareas
@@ -135,7 +135,7 @@
     }
 
     async function actualizarTarea(tarea) {
-        const {id, nombre, estado, proyecto_id} = tarea;
+        const { id, nombre, estado, proyecto_id } = tarea;
 
         const params = new URLSearchParams(window.location.search);
         const url = params.get('url');
@@ -156,11 +156,11 @@
 
             const body = await res.json();
 
-            if(body.success) {
-                mostrarAlerta(body.mensaje, 'exito', document.querySelector('.container-nueva-tarea'));
-                
+            if (body.success) {
+                mostrarAlerta(body.message, 'exito', document.querySelector('.container-nueva-tarea'));
+
                 tareas = tareas.map(tareaMemoria => {
-                    if(tareaMemoria.id === body.id) {
+                    if (tareaMemoria.id === body.id) {
                         tareaMemoria.estado = body.estado;
                     }
 
@@ -175,19 +175,77 @@
         }
     }
 
+    function confirmarEliminarTarea(tarea) {
+        Swal.fire({
+            title: "¿Quieres eliminar esta tarea?",
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminar!",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarTarea(tarea);
+
+                Swal.fire({
+                    title: "Eliminado!",
+                    text: "La tarea ha sido eliminada",
+                    icon: "success"
+                });
+            }
+        });
+    }
+
+    async function eliminarTarea(tarea) {
+        const { id, nombre, estado, proyecto_id } = tarea;
+
+        const params = new URLSearchParams(window.location.search);
+        const url = params.get('url');
+
+        const datos = new FormData();
+        datos.append('id', id);
+        datos.append('nombre', nombre);
+        datos.append('estado', estado);
+        datos.append('proyecto_id', proyecto_id);
+        datos.append('url', url);
+
+        try {
+            const apiUrl = 'http://localhost:3000/api/tarea-eliminar';
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                body: datos
+            })
+
+            const body = await res.json();
+
+            if(body.success) {
+                // mostrarAlerta(body.message, 'exito', document.querySelector('.container-nueva-tarea'));
+
+                tareas = tareas.filter(tareaMemoria => tareaMemoria.id !== body.id);
+            }
+
+            renderTareas();
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // Muestra un mensaje en la vista
     function mostrarAlerta(mensaje, tipo, referencia) {
         // Eliminar la alerta previa
         const alertaPrevia = document.querySelector('.alerta');
-        
-        if(alertaPrevia) {
+
+        if (alertaPrevia) {
             alertaPrevia.remove();
         }
 
         const alerta = document.createElement('DIV');
         alerta.classList.add('alerta', tipo)
         alerta.textContent = mensaje;
-        
+
         // Buscamos el padre de "referencia", insertamos la "alerta" antes del siguinte hermano (nextElementSibling) de la referencia
         referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling);
 
@@ -223,11 +281,11 @@
 
         const contenedorTareas = document.querySelector('#listado-tareas');
 
-        if(tareas.length === 0) {
+        if (tareas.length === 0) {
             const textoNoTareas = document.createElement('LI');
             textoNoTareas.textContent = 'No tienes ninguna tarea para este proyecto';
             textoNoTareas.classList.add('no-tareas');
-            
+
             contenedorTareas.appendChild(textoNoTareas);
 
             return;
@@ -255,17 +313,21 @@
             btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
             btnEstadoTarea.textContent = estados[tarea.estado];
             btnEstadoTarea.dataset.tareaEstado = tarea.estado;
-            btnEstadoTarea.ondblclick = function() {
-                cambiarEstadoTarea({...tarea});
+            btnEstadoTarea.ondblclick = function () {
+                cambiarEstadoTarea({ ...tarea });
             }
 
-            const bntEliminarTarea = document.createElement('BUTTON');
-            bntEliminarTarea.classList.add('eliminar-tarea');
-            bntEliminarTarea.dataset.tareaId = tarea.id;
-            bntEliminarTarea.textContent = 'Eliminar';
+            const btnEliminarTarea = document.createElement('BUTTON');
+            btnEliminarTarea.classList.add('eliminar-tarea');
+            btnEliminarTarea.dataset.tareaId = tarea.id;
+            btnEliminarTarea.textContent = 'Eliminar';
+            btnEliminarTarea.ondblclick = function () {
+                confirmarEliminarTarea({ ...tarea });
+            }
+
 
             opcionesDiv.appendChild(btnEstadoTarea);
-            opcionesDiv.appendChild(bntEliminarTarea);
+            opcionesDiv.appendChild(btnEliminarTarea);
 
             contenedorTarea.appendChild(nombreTarea);
             contenedorTarea.appendChild(opcionesDiv);
@@ -276,8 +338,8 @@
 
     function limpiarTareas() {
         const tareaAnterior = document.querySelector('#listado-tareas');
-        
-        while(tareaAnterior.firstChild) {
+
+        while (tareaAnterior.firstChild) {
             tareaAnterior.removeChild(tareaAnterior.firstChild);
         }
     }
