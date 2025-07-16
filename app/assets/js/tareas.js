@@ -7,22 +7,24 @@
 
     // Boton para mostrar el Modal de Agregar nueva tarea
     const nuevaTareaBtn = document.querySelector('.agregar-tarea');
-    nuevaTareaBtn.addEventListener('click', mostrarFormulario);
+    nuevaTareaBtn.addEventListener('click', () => { // ('click', mostrarFormulario) => de esta manera implicitamente el primer parametro que se le pasa a la funcion es el objeto de evento
+        mostrarFormulario();
+    });
 
-    function mostrarFormulario() {
+    function mostrarFormulario(editar = false, tarea = {}) {
         const modal = document.createElement('DIV');
         modal.classList.add('modal');
         modal.innerHTML = `
             <form class="formulario nueva-tarea" method='POST'>
-                <legend>Añadir una nueva tarea</legend>
+                <legend>${editar ? 'Editar Tarea' : 'Añadir una nueva tarea'}</legend>
 
                 <div class="form-group">
                     <label for="tarea">Tarea</label>
-                    <input type="text" id="tarea" name="tarea" placeholder="Nombre de la tarea"/>
+                    <input type="text" id="tarea" name="tarea" placeholder="${tarea.nombre ? 'Editar la tarea' : 'Nombre de la tarea'}" value="${tarea.nombre ? tarea.nombre : ''}" />
                 </div>
 
                 <div class="opciones">
-                    <input type="submit" class="submit-tarea" value="Añadir Tarea"/>
+                    <input type="submit" class="submit-tarea" value="${editar ? 'Editar' : 'Añadir Tarea'}"/>
                     <button type="button" class="cerrar-modal">Cancelar</button>
                 </div>
 
@@ -303,6 +305,9 @@
 
             const nombreTarea = document.createElement('P');
             nombreTarea.textContent = tarea.nombre;
+            nombreTarea.ondblclick = function() {
+                mostrarFormulario(editar = true, tarea);
+            }
 
             const opcionesDiv = document.createElement('DIV');
             opcionesDiv.classList.add('opciones');
