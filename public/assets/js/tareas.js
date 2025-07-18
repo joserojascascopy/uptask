@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="opciones">
-                    <input type="submit" class="submit-tarea" value="${editar ? 'Editar' : 'Añadir Tarea'}"/>
+                    <input type="submit" class="submit-tarea" value="${editar ? 'Guardar cambios' : 'Añadir Tarea'}"/>
                     <button type="button" class="cerrar-modal">Cancelar</button>
                 </div>
 
@@ -52,25 +52,29 @@
 
             // Verificar si le damos click al boton de añadir tarea
             if (e.target.classList.contains('submit-tarea')) {
-                submitFormNewTask();
+                // Obtenemos el valor del input "Añadir Tarea"
+                const nombreTarea = document.getElementById('tarea').value.trim();
+                // Validamos el campo de añadir tarea, si esta vacio, mostramos la alerta
+                if (nombreTarea === '') {
+                    // Mostrar una alerta de error
+                    mostrarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'));
+
+                    return;
+                }
+
+                if (editar) {
+                    // Reescribimos el nombre de la tarea del objeto global tarea por el nuevo nombre
+                    tarea.nombre = nombreTarea;
+                    actualizarTarea(tarea);
+
+                    return;
+                }
+
+                agregarTarea(nombreTarea);
             }
         });
 
         document.querySelector('.dashboard').appendChild(modal);
-    }
-
-    function submitFormNewTask() {
-        // Obtenemos el valor del input "Añadir Tarea"
-        const tarea = document.getElementById('tarea').value.trim();
-        // Validamos el campo de añadir tarea, si esta vacio, mostramos la alerta
-        if (tarea === '') {
-            // Mostrar una alerta de error
-            mostrarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'));
-
-            return;
-        }
-
-        agregarTarea(tarea);
     }
 
     // Agregar la tarea al proyecto actual (Mandar los datos al servidor backend)
@@ -159,11 +163,24 @@
             const body = await res.json();
 
             if (body.success) {
-                mostrarAlerta(body.message, 'exito', document.querySelector('.container-nueva-tarea'));
+                Swal.fire({
+                    icon: "success",
+                    title: "Se ha actualizado la tarea",
+                    showConfirmButton: true,
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        const modal = document.querySelector('.modal');
+
+                        if(modal) {
+                            modal.remove();
+                        }
+                    }
+                });
 
                 tareas = tareas.map(tareaMemoria => {
                     if (tareaMemoria.id === body.id) {
                         tareaMemoria.estado = body.estado;
+                        tareaMemoria.nombre = body.nombre;
                     }
 
                     return tareaMemoria; // !Important el return, o sino retorna cada elemento del array como undefined
@@ -222,7 +239,7 @@
 
             const body = await res.json();
 
-            if(body.success) {
+            if (body.success) {
                 // mostrarAlerta(body.message, 'exito', document.querySelector('.container-nueva-tarea'));
 
                 tareas = tareas.filter(tareaMemoria => tareaMemoria.id !== body.id);
@@ -305,8 +322,8 @@
 
             const nombreTarea = document.createElement('P');
             nombreTarea.textContent = tarea.nombre;
-            nombreTarea.ondblclick = function() {
-                mostrarFormulario(editar = true, tarea);
+            nombreTarea.ondblclick = function () {
+                mostrarFormulario(editar = true, { ...tarea });
             }
 
             const opcionesDiv = document.createElement('DIV');

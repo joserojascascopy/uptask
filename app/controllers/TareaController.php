@@ -120,6 +120,7 @@ class TareaController {
                 $response = [
                     'success' => true,
                     'id' => $tarea->id,
+                    'nombre' => $tarea->nombre,
                     'proyecto_id' => $proyecto->id,
                     'message' => 'Tarea actualizada correctamente',
                     'estado' => $tarea->estado
