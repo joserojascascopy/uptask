@@ -2,6 +2,7 @@
 
 (function () {
     let tareas = [];
+    let tareasFiltradas = [];
 
     obtenerTareas();
 
@@ -10,6 +11,24 @@
     nuevaTareaBtn.addEventListener('click', () => { // ('click', mostrarFormulario) => de esta manera implicitamente el primer parametro que se le pasa a la funcion es el objeto de evento
         mostrarFormulario();
     });
+
+    // Filtros de busqueda
+    const inputsRadio = document.querySelectorAll('.input-radio');
+    inputsRadio.forEach(inputRadio => {
+        inputRadio.addEventListener('change', filtrarTareas);
+    });
+
+    function filtrarTareas(e) {
+        const estado = e.target.value;
+
+        if(estado !== '') {
+            tareasFiltradas = tareas.filter(tareaMemoria => tareaMemoria.estado === estado);
+        }else {
+            tareasFiltradas = [];
+        }
+
+        renderTareas();
+    }
 
     function mostrarFormulario(editar = false, tarea = {}) {
         const modal = document.createElement('DIV');
@@ -297,10 +316,14 @@
     function renderTareas() {
         // Limpiar las tareas anteriores
         limpiarTareas();
+        totalPendientes();
+        totalCompletadas();
+
+        const arrayTareas = tareasFiltradas.length ? tareasFiltradas : tareas;
 
         const contenedorTareas = document.querySelector('#listado-tareas');
 
-        if (tareas.length === 0) {
+        if (arrayTareas.length === 0) {
             const textoNoTareas = document.createElement('LI');
             textoNoTareas.textContent = 'No tienes ninguna tarea para este proyecto';
             textoNoTareas.classList.add('no-tareas');
@@ -315,7 +338,7 @@
             1: 'Completado'
         }
 
-        tareas.forEach(tarea => {
+        arrayTareas.forEach(tarea => {
             const contenedorTarea = document.createElement('LI');
             contenedorTarea.dataset.tareaId = tarea.id;
             contenedorTarea.classList.add('tarea');
@@ -356,6 +379,28 @@
 
             contenedorTareas.appendChild(contenedorTarea);
         });
+    }
+
+    function totalPendientes() {
+        const totalPendientes = tareas.filter(tarea => tarea.estado === '0');
+        const inputPendiente = document.querySelector('#pendientes');
+
+        if(totalPendientes.length === 0) {
+            inputPendiente.disabled = true;
+        }else {
+            inputPendiente.disabled = false;
+        }
+    }
+
+    function totalCompletadas() {
+        const totalCompletadas = tareas.filter(tarea => tarea.estado === '1');
+        const inputCompletadas = document.querySelector('#completadas');
+
+        if(totalCompletadas.length === 0) {
+            inputCompletadas.disabled = true;
+        }else {
+            inputCompletadas.disabled = false;
+        }
     }
 
     function limpiarTareas() {
