@@ -1,4 +1,15 @@
 <div class="barra">
+
+    <div class="menu-mobile">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0,0,256,256">
+            <g fill="#4338CA" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                <g transform="scale(5.12,5.12)">
+                    <path d="M0,7.5v5h50v-5zM0,22.5v5h50v-5zM0,37.5v5h50v-5z"></path>
+                </g>
+            </g>
+        </svg>
+    </div>
+
     <p>Hola: <span><?php echo $nombre; ?></span></p>
 
     <a href="/logout" class="cerrar-sesion">Cerrar Sesión</a>

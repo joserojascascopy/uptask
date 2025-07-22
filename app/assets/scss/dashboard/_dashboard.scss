@@ -5,44 +5,71 @@
 .dashboard {
     background-color: v.$grisClaro;
     display: flex;
+    position: relative;
     height: 100vh;
 
     .main {
         flex: 1; // Para que pueda ocupar todo el espacio restante
         overflow-y: scroll;
         scrollbar-width: none;
-    }
+        position: relative;
+        z-index: 1;
 
-    .contenido {
-        padding: 1rem 2rem;
+        @include m.tablet {
+            z-index: auto;
+        }
 
-        .nombre-pagina {
-            margin: 0;
-            text-align: center;
+        .contenido {
+            padding: 1rem 2rem;
+
+            .nombre-pagina {
+                margin: 0;
+                text-align: center;
+            }
+
+            .formulario {
+
+                .btn-crearproyecto {
+                    display: flex;
+                    justify-content: center;
+
+                    input[type="submit"] {
+                        justify-content: center;
+                        background-color: v.$indigo;
+                        padding: 1rem 3rem;
+                        color: v.$blanco;
+                        border-radius: 0.5rem;
+                        font-weight: 600;
+                        font-size: 1.25rem;
+                        text-transform: uppercase;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: color.adjust(v.$indigo, $lightness: -30%);
+                        }
+                    }
+                }
+            }
         }
     }
 
-    .formulario {
 
-        .btn-crearproyecto {
-            display: flex;
-            justify-content: center;
+    .overlay {
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 90;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: none;
 
-            input[type="submit"] {
-                justify-content: center;
-                background-color: v.$indigo;
-                padding: 1rem 3rem;
-                color: v.$blanco;
-                border-radius: 0.5rem;
-                font-weight: 600;
-                font-size: 1.25rem;
-                text-transform: uppercase;
-                cursor: pointer;
+        @include m.tablet {
+            display: none !important;
+        }
 
-                &:hover {
-                background-color: color.adjust(v.$indigo, $lightness: -30%);
-                }
-            }
+        &.activo {
+            display: block;
         }
     }
 }

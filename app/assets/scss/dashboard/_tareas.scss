@@ -25,7 +25,11 @@
     font-weight: 500;
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    gap: 1rem;
+
+    @include m.tablet {
+        gap: 2rem;
+    }
 
     span {
         font-size: 1.5rem;

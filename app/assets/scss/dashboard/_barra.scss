@@ -10,8 +10,21 @@
     padding: 1rem 2rem;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
+    .menu-mobile {
+        width: 2.5rem;
+        
+        @include m.tablet {
+            display: none;
+        }
+    }
+
     p {
+        display: none;
         font-size: 1.25rem;
+
+        @include m.tablet {
+            display: block;
+        }
 
         span {
             font-weight: 600;
