@@ -117,7 +117,6 @@ class DashboardController {
 
                     // Asignar el nombre nuevo a la barra de navegacion
                     $_SESSION['nombre'] = $usuario->nombre;
-                    $_SESSION['email'] = $usuario->email;
                 }
             }
         }
