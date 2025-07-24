@@ -3,6 +3,8 @@
 <div class="container-sm">
     <?php include_once __DIR__ . '/../templates/alertas.php'; ?>
 
+    <a href="/cambiar-password" class="enlace">Cambiar Contraseña</a>
+
     <form class="formulario" method="POST" action="/perfil">
         <div class="form-group">
             <label for="nombre">Nombre: </label>
@@ -10,7 +12,7 @@
         </div>
         <div class="form-group">
             <label for="email">Email: </label>
-            <input type="email" id="email" value="<?php echo $email; ?>" name="email" placeholder="Tú email">
+            <input type="email" id="email" value="<?php echo $email; ?>" name="email" placeholder="Tú email" disabled>
         </div>
 
         <div class="btn-perfil">

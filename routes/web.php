@@ -61,3 +61,8 @@ $router->post('/api/tarea-eliminar', [TareaController::class, 'eliminar']);
 
 $router->get('/perfil', [DashboardController::class, 'perfil']);
 $router->post('/perfil', [DashboardController::class, 'perfil']);
+
+// Cambiar Contraseña
+
+$router->get('/cambiar-password', [DashboardController::class, 'cambiar_password']);
+$router->post('/cambiar-password', [DashboardController::class, 'cambiar_password']);

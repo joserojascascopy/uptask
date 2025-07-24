@@ -50,6 +50,16 @@
                     }
                 }
             }
+
+            .enlace {
+                display: inline-block;
+                margin-top: 2rem;
+                color: v.$indigo;
+
+                &:hover {
+                    color: color.adjust(v.$indigo, $lightness: -20%);
+                }
+            }
         }
     }
 

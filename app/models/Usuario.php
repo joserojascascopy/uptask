@@ -12,6 +12,8 @@ class Usuario extends Model {
     public $email;
     public $password;
     public $password2;
+    public $password_actual;
+    public $password_nuevo;
     public $token;
     public $confirmado;
 
@@ -21,6 +23,8 @@ class Usuario extends Model {
         $this->email = $args['email'] ?? '';
         $this->password = $args['password'] ?? '';
         $this->password2 = $args['password2'] ?? '';
+        $this->password_actual = $args['password_actual'] ?? '';
+        $this->password_nuevo = $args['password_nuevo'] ?? '';
         $this->token = $args['token'] ?? '';
         $this->confirmado = $args['confirmado'] ?? 0;
     }
@@ -118,6 +122,27 @@ class Usuario extends Model {
         }
 
         return self::$alertas;
+    }
+
+    public function nuevo_password() {
+        if(!$this->password_actual) {
+            self::$alertas['error'][] = 'La contraseña actual no puede ir vacio';
+        }
+
+        if(!$this->password_nuevo) {
+            self::$alertas['error'][] = 'La contraseña nueva no puede ir vacio';
+        }else {
+            // Validación por cantidad de carácteres
+            if(strlen($this->password_nuevo) < 6) {
+                self::$alertas['error'][] = 'La contraseña debe contener al menos 6 carácteres';
+            }
+        }
+
+        return self::$alertas;
+    }
+
+    public function comprobar_password() : bool {
+        return password_verify($this->password_actual, $this->password);
     }
 
     // Hashea el password
