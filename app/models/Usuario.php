@@ -103,6 +103,23 @@ class Usuario extends Model {
         return self::$alertas;
     }
 
+    //  Validar el formulario de la sección "Perfil"
+    public function perfilValidation() {
+        if(!$this->nombre) {
+            self::$alertas['error'][] = 'El nombre no puede estar vacio';
+        }
+
+        if(!$this->email) {
+            self::$alertas['error'][] = 'El email es obligatorio';
+        }
+
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$alertas['error'][] = 'El email no es válido';
+        }
+
+        return self::$alertas;
+    }
+
     // Hashea el password
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);

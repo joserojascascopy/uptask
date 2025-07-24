@@ -83,6 +83,14 @@ class Model {
         return $resultado;
     }
 
+    public function sincronizar($args = []) {
+        foreach($args as $key => $value) {
+            if(property_exists($this, $key) && $value !== '') { // Con property_exists evitamos crear atributos dinamicamente que no existen en el objeto
+                $this->$key = $value;
+            }
+        }
+    }
+
      // Sanitizar atributos
     public function sanitizarAtributos() {
         $atributos = $this->atributos();
@@ -142,6 +150,15 @@ class Model {
         $resultados = self::consultaSQL($query);
 
         return $resultados;
+    }
+
+    // Busca un registro en la DB por su id
+    public static function find($id) {
+        $query = "SELECT * FROM " . static::$table . " WHERE id = '{$id}'";
+
+        $resultado = self::consultaSQL($query);
+
+        return $resultado[0];
     }
 
     public static function createObject($registro) {
